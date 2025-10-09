@@ -41,5 +41,12 @@ export function generatePastContinuous(rng) {
     correctTense: 'Past Continuous',
     marker,
     rationale: marker?.rationale ?? 'Acción en desarrollo interrumpida en el pasado.',
+    meta: {
+      subject,
+      verb,
+      objectEn,
+      objectEs,
+      marker,
+    },
   });
 }

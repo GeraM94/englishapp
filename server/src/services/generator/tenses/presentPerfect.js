@@ -50,5 +50,12 @@ export function generatePresentPerfect(rng) {
     correctTense: 'Present Perfect',
     marker,
     rationale: marker?.rationale ?? 'Resultado presente de una acción pasada.',
+    meta: {
+      subject,
+      verb,
+      objectEn,
+      objectEs,
+      marker,
+    },
   });
 }

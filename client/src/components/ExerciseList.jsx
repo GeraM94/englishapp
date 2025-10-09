@@ -1,4 +1,4 @@
-import { ExerciseCard } from './ExerciseCard.jsx';
+import { ClozeCard } from './ClozeCard.jsx';
 
 export function ExerciseList({ items, responses, onAnswer }) {
   if (!items.length) {
@@ -12,7 +12,7 @@ export function ExerciseList({ items, responses, onAnswer }) {
   return (
     <section className="exercise-list" aria-live="polite">
       {items.map((item) => (
-        <ExerciseCard key={item.id} item={item} response={responses[item.id]} onAnswer={onAnswer} />
+        <ClozeCard key={item.id} item={item} response={responses[item.id]} onAnswer={onAnswer} />
       ))}
     </section>
   );

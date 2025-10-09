@@ -41,5 +41,12 @@ export function generatePresentContinuous(rng) {
     correctTense: 'Present Continuous',
     marker,
     rationale: marker?.rationale ?? 'Acción en progreso en el presente inmediato.',
+    meta: {
+      subject,
+      verb,
+      objectEn,
+      objectEs,
+      marker,
+    },
   });
 }

@@ -41,5 +41,12 @@ export function generatePastPerfectContinuous(rng) {
     correctTense: 'Past Perfect Continuous',
     marker,
     rationale: marker?.rationale ?? 'Acción prolongada previa a otro evento pasado.',
+    meta: {
+      subject,
+      verb,
+      objectEn,
+      objectEs,
+      marker,
+    },
   });
 }

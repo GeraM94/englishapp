@@ -45,5 +45,12 @@ export function generateSimplePast(rng) {
     correctTense: 'Simple Past',
     marker,
     rationale: marker?.rationale ?? 'Acción finalizada en el pasado.',
+    meta: {
+      subject,
+      verb,
+      objectEn,
+      objectEs,
+      marker,
+    },
   });
 }

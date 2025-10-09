@@ -9,6 +9,7 @@ import { generatePastContinuous } from './tenses/pastContinuous.js';
 import { generatePastPerfectContinuous } from './tenses/pastPerfectContinuous.js';
 import { generateFutureWill } from './tenses/futureWill.js';
 import { generateBeGoingTo } from './tenses/beGoingTo.js';
+import { buildClozeItem } from './clozeBuilders.js';
 
 const GENERATORS = {
   'Present Simple': generatePresentSimple,
@@ -32,7 +33,7 @@ function buildOptions(correctTense, selectedTenses, rng) {
   return options;
 }
 
-export function generateItems({ tenses, count, seed }) {
+export function generateItems({ tenses, count, seed, mode = 'multiple-choice' }) {
   const selected = (tenses ?? []).filter((tense) => GENERATORS[tense]);
   if (!selected.length) {
     throw new Error('No hay generadores disponibles para los tiempos solicitados.');
@@ -53,6 +54,20 @@ export function generateItems({ tenses, count, seed }) {
     const generator = GENERATORS[tense];
     const item = generator(rng);
 
+    if (mode === 'cloze') {
+      const clozeItem = buildClozeItem(item, rng);
+      if (!clozeItem) {
+        continue;
+      }
+      const clozeKey = `${clozeItem.sentenceCloze}|${clozeItem.correctAnswer}|${clozeItem.correctTense}`;
+      if (seen.has(clozeKey)) {
+        continue;
+      }
+      seen.add(clozeKey);
+      items.push({ ...clozeItem, seed: generationSeed });
+      continue;
+    }
+
     const key = `${item.sentenceEn}|${tense}`;
     if (seen.has(key)) {
       continue;
@@ -70,6 +85,7 @@ export function generateItems({ tenses, count, seed }) {
   return {
     seed: generationSeed,
     tenses: uniqueTenses,
+    mode,
     items: shuffle(items, rng),
   };
 }

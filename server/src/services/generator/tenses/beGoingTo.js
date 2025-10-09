@@ -41,5 +41,12 @@ export function generateBeGoingTo(rng) {
     correctTense: 'Be going to',
     marker,
     rationale: marker?.rationale ?? 'Plan o intención decidida expresada con be going to.',
+    meta: {
+      subject,
+      verb,
+      objectEn,
+      objectEs,
+      marker,
+    },
   });
 }

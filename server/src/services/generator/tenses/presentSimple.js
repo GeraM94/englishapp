@@ -47,5 +47,12 @@ export function generatePresentSimple(rng) {
     correctTense: 'Present Simple',
     marker,
     rationale: marker?.rationale ?? 'Acción habitual expresada en Present Simple.',
+    meta: {
+      subject,
+      verb,
+      objectEn,
+      objectEs,
+      marker,
+    },
   });
 }
