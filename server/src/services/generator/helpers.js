@@ -53,6 +53,7 @@ export function createItemBase({
   correctTense,
   marker,
   rationale,
+  meta = {},
 }) {
   return {
     id: randomUUID(),
@@ -62,6 +63,7 @@ export function createItemBase({
     rationale,
     trigger: marker?.en ?? null,
     triggerEs: marker?.es ?? null,
+    meta,
   };
 }
 

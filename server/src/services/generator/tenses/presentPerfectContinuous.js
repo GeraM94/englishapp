@@ -41,5 +41,12 @@ export function generatePresentPerfectContinuous(rng) {
     correctTense: 'Present Perfect Continuous',
     marker,
     rationale: marker?.rationale ?? 'Acción continua que conecta pasado y presente.',
+    meta: {
+      subject,
+      verb,
+      objectEn,
+      objectEs,
+      marker,
+    },
   });
 }

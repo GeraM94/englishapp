@@ -1,9 +1,10 @@
 import { apiClient } from './client.js';
 
-export async function generateExercises({ tenses, count }) {
+export async function generateExercises({ tenses, count, mode = 'multiple-choice' }) {
   const response = await apiClient.post('/generate', {
     tenses,
     count,
+    mode,
   });
   return response.data;
 }

@@ -5,12 +5,13 @@ const requestSchema = z.object({
   tenses: z.array(z.string()).nonempty('Selecciona al menos un tiempo verbal'),
   count: z.number().int().min(1).max(40).default(10),
   seed: z.string().optional(),
+  mode: z.enum(['multiple-choice', 'cloze']).default('multiple-choice'),
 });
 
 export async function handleGenerate(req, res) {
   try {
-    const { tenses, count, seed } = requestSchema.parse(req.body);
-    const result = generateItems({ tenses, count, seed });
+    const { tenses, count, seed, mode } = requestSchema.parse(req.body);
+    const result = generateItems({ tenses, count, seed, mode });
     res.json(result);
   } catch (error) {
     if (error instanceof z.ZodError) {

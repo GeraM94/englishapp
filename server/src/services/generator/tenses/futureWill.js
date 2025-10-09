@@ -42,5 +42,12 @@ export function generateFutureWill(rng) {
     correctTense: 'Future (will)',
     marker,
     rationale: marker?.rationale ?? 'Decisión o predicción con will.',
+    meta: {
+      subject,
+      verb,
+      objectEn,
+      objectEs,
+      marker,
+    },
   });
 }

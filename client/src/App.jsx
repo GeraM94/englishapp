@@ -1,9 +1,12 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useGenerateExercises } from './hooks/useGenerateExercises.js';
 import { useAttemptLogger } from './hooks/useAttemptLogger.js';
-import { TenseSelector } from './components/TenseSelector.jsx';
+import { AppHeader } from './components/AppHeader.jsx';
+import { ScoreBar } from './components/ScoreBar.jsx';
+import { GeneratorPanel } from './components/GeneratorPanel.jsx';
 import { ExerciseList } from './components/ExerciseList.jsx';
-import { ProgressSummary } from './components/ProgressSummary.jsx';
+import { ResultsSummary } from './components/ResultsSummary.jsx';
+import { useStickyOffsets } from './hooks/useStickyOffsets.js';
 import { computeProgress } from './utils/progress.js';
 
 function useSelectedTenses(initial = []) {
@@ -24,6 +27,10 @@ export default function App() {
   const [items, setItems] = useState([]);
   const [responses, setResponses] = useState({});
   const [sessionMeta, setSessionMeta] = useState(null);
+  const mode = 'cloze';
+
+  const appRef = useRef(null);
+  const { headerRef, scoreBarRef } = useStickyOffsets(appRef);
 
   const generateMutation = useGenerateExercises();
   const attemptLogger = useAttemptLogger();
@@ -31,20 +38,25 @@ export default function App() {
   const handleGenerate = async () => {
     if (!selectedTenses.length) return;
     try {
-      const data = await generateMutation.mutateAsync({ tenses: selectedTenses, count });
+      const data = await generateMutation.mutateAsync({ tenses: selectedTenses, count, mode });
       setItems(data.items);
       setResponses({});
-      setSessionMeta({ tenses: data.tenses, seed: data.seed, total: data.items.length });
+      setSessionMeta({
+        tenses: data.tenses,
+        seed: data.seed,
+        total: data.items.length,
+        mode: data.mode,
+      });
       setSelectedTenses(data.tenses);
     } catch (error) {
       console.error(error);
     }
   };
 
-  const handleAnswer = ({ itemId, chosenTense, correct }) => {
+  const handleAnswer = ({ itemId, choice, correct }) => {
     setResponses((prev) => ({
       ...prev,
-      [itemId]: { chosenTense, correct },
+      [itemId]: { chosenOption: choice, correct },
     }));
 
     const item = items.find((exercise) => exercise.id === itemId);
@@ -52,7 +64,7 @@ export default function App() {
 
     attemptLogger.mutate({
       itemId,
-      chosenTense,
+      chosenTense: choice,
       correct,
       correctTense: item.correctTense,
       tensesSelected: sessionMeta?.tenses ?? selectedTenses,
@@ -61,16 +73,20 @@ export default function App() {
   };
 
   const progress = useMemo(() => computeProgress(items, responses), [items, responses]);
+  const allAnswered = progress.total > 0 && progress.answered === progress.total;
 
   return (
-    <div className="app">
-      <header className="app-header">
-        <h1>Entrenador de tiempos verbales</h1>
-        <p>Practica identificando el tiempo verbal correcto en cada oración.</p>
-      </header>
-      <ProgressSummary {...progress} />
+    <div className="app" ref={appRef} data-layout="grid-rows">
+      <AppHeader ref={headerRef} />
+      <ScoreBar
+        ref={scoreBarRef}
+        total={progress.total}
+        answered={progress.answered}
+        correct={progress.correct}
+        accuracy={progress.accuracy}
+      />
       <div className="layout">
-        <TenseSelector
+        <GeneratorPanel
           selectedTenses={selectedTenses}
           onToggle={toggleTense}
           count={count}
@@ -85,6 +101,7 @@ export default function App() {
             </div>
           )}
           <ExerciseList items={items} responses={responses} onAnswer={handleAnswer} />
+          {allAnswered && <ResultsSummary {...progress} />}
           {items.length > 0 && (
             <button type="button" className="secondary" onClick={handleGenerate}>
               Generar más

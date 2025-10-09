@@ -1,9 +1,19 @@
 import { TENSE_OPTIONS } from '../utils/tenses.js';
 
-export function TenseSelector({ selectedTenses, onToggle, count, onCountChange, onGenerate, isLoading }) {
+export function GeneratorPanel({
+  selectedTenses,
+  onToggle,
+  count,
+  onCountChange,
+  onGenerate,
+  isLoading,
+}) {
   return (
-    <section className="panel" aria-label="Selector de tiempos verbales">
-      <h2>Selecciona tiempos verbales</h2>
+    <section className="panel generator-panel" aria-label="Selector de tiempos verbales">
+      <header className="generator-panel__header">
+        <h2>Configura tu práctica</h2>
+        <p>Elige los tiempos que quieres repasar y cuántos ítems cloze generar.</p>
+      </header>
       <fieldset>
         <legend className="sr-only">Tiempos disponibles</legend>
         <div className="checkbox-grid">
